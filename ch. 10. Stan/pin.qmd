@@ -1,0 +1,153 @@
+library(---
+title: "압정 분석 예제"
+author: "이경원"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format:
+    html:
+        number-sections: true
+        theme: "cosmo"
+        toc: true
+        toc-depth: 2
+        df-print: "paged"
+        code-line-numbers: true
+        code-block-bg: true
+        code-block-border-left: "#31BAE9"
+---
+
+:::{.callout-note appearance="simple" icon="false"}
+## Goal
+
+압정을 10번 던졌을 때 뾰족한 부분(pin)이 아래로 향하도록 떨어진 횟수가 (pin down) 7번이라 하자. 이 자료를 사용해 압정을 던졌을 때 뾰족한 부분이 아래로 향하도록 떨어질 확률 $\theta$를 추정해본다.
+:::
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+    echo = TRUE, cache = FALSE, error = TRUE,
+    fig.width = 8, fig.height = 4
+)
+```
+
+먼저 필요한 패키지를 불러온다. 
+
+```{r load library}
+library(tidyverse)
+library(rstan)
+```
+
+# 모형
+
+$$ 
+\begin{equation}
+\begin{aligned}
+\theta &\sim Beta(5, 10), \\
+X|\theta &\sim Binomial(10, \theta)
+\end{aligned}
+\end{equation}
+$$
+
+에서 관측치 $X=7$이 주어졌다고 생각하자. 
+
+여기서는 `stan`을 이용한 추론을 다룬다.
+아래는 불필요한 코드이다.
+```{r}
+# stan code 
+# pin_model <- "
+# data {
+#   int<lower=0> N;
+#   int<lower=0,upper=10> X[N];
+# }
+# parameters {
+#   real<lower=0,upper=1> theta;
+# }
+# model {
+#   theta ~ beta(5, 10);
+#   X ~ binomial(10, theta);
+# }"
+```
+
+# 베이즈 추론
+
+```{r}
+# stan code
+pin_code <- "
+data {
+  int<lower=0> n;
+  int<lower=0,upper=10> x;
+}
+parameters {
+  real<lower=0,upper=1> theta;
+}
+model {
+  theta ~ beta(5, 10);
+  x ~ binomial(n, theta);
+}
+"
+```
+
+이 코드로부터 $\theta$를 추출한다. 표본 크기는 1,000, warm-up 크기는 1,000으로 설정한다.
+아래는 stan()로 stan 코드를 돌리는 것이다. (MCMC 하는 것이다)
+```{r}
+pin_fit <- stan(
+  model_code = pin_code,
+  data = list(n = 10, x = 7),
+  iter = 2000,
+  warmup = 1000
+)
+```
+
+# 결과
+
+다음과 같이 사후표본의 요약통계량을 확인할 수 있다.
+
+```{r}
+summary(pin_fit)
+```
+
+```{r}
+print(pin_fit)
+```
+
+
+이 중 `n_eff`는 유효 표본 크기(effective sample size), `Rhat` 은 R-hat 수렴 진단을 위한 값을 의미한다.
+
+유효 표본 크기는 Stan이 자기 상관(autocorrelation)을 반영하여 계산한 유효한 MCMC 표본의 수를 의미한다. 이 값이 작다는 것은 자기상관성이 강해 모수가 충분히 수렴하지 않았다는 것을 의미하므로 개선이 필요하다는 힌트로 받아들인다. 보통은 100 이상의 값이 바람직하다는 것이 알려져 있다. 
+
+R-hat 수렴 진단은 모형의 모수에 대해 체인 간(between-) 및 체인 내(within-) 추정치를 비교합니다. 체인이 잘 혼합되지 않은 경우(즉, 체인 간 추정과 체인 내 추정이 일치하지 않는 경우) R-hat 값은 1보다 큽니다. 기본적으로 최소 4개의 체인을 실행하고 R-hat이 1.05 미만인 경우에만 샘플을 사용하는 것이 좋다고 알려져 있다[^rhat].
+
+위 값을 보면 체인이 충분히 수렴했다고 말할 수 있고, 그대로 분석을 진행해도 무방하다.
+
+$\theta$의 사후평균(posterior mean)값은 `r round(tail(as.numeric(get_posterior_mean(pin_fit, pars="theta")), n = 1), 2)`정도로 0.5보다 작다. 즉, 핀이 아래로 나올 확률이 위로 나올 확률보다 더 작다고 말할 수 있다. 
+
+아래 chunk는 위의 r round...를 이해하기 위하여 쳐 본 것이다. 
+```{r}
+as.numeric(get_posterior_mean(pin_fit, pars="theta"))
+get_posterior_mean(pin_fit, pars="theta")
+```
+
+
+[^rhat]: Stan은 rank normalized split-R-hat과 rank normalized Folded-split-R-hat의 최대값인 R-hat을 보고한다.
+
+# 시각화
+
+## rstan 패키지
+
+`rstan` 패키지에는 사후분포를 시각화하는 여러 가지 함수들을 제공한다. 다음의 코드로 사후밀도함수를 확인할 수 있다.
+
+```{r}
+stan_dens(pin_fit, pars = "theta")
+```
+
+다음의 코드로 사후표본의 히스토그램을 확인할 수 있다.
+
+```{r}
+stan_hist(pin_fit, pars = "theta")
+```
+
+두 그림으로부터 사후분포가 사후평균값 근처에 몰려있는 형태를 보여준다. 
+
+다음의 코드로 사후표본의 궤적(trace)을 확인할 수 있다.
+
+```{r}
+stan_trace(pin_fit, pars = "theta")
+```
+
