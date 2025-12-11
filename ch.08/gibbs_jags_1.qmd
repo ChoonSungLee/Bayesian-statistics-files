@@ -1,0 +1,101 @@
+# RJAGS Trial
+
+
+## 패키지 설치
+
+#JAGS를 먼저 설치해야 한다. 
+
+#Download_link; \href{https://www.example.com}{Example Website}
+
+
+#R에서 JAGS사용하기 위하여 rjags 패키지를 R에 설치한다.
+#다음의 코드를 실행한다.
+```{r}
+if(!require("rjags")) install.packages("rjags")
+```
+
+
+```{r}
+library(rjags)
+
+```
+
+## 결과 확인
+
+수렴진단 결과를 보고 싶다면 다음과 같이 실행한다.
+
+```{r}
+library(coda)
+
+``` 
+
+X1, · · · , X10 | μ, σ2 ∼ N(μ, σ2), μ ∼ N(10, 52), σ2 ∼ IG(0.5, 1)이고,
+x1, · · · , x10 = (10, 13, 15, 11, 9, 18, 20, 17, 23, 21)일 때, 
+θ = (μ, σ2)에 대해
+깁스 표본기법을 적용해 보자.
+
+
+<!-- 아래는 오만숙 10장 예제 2를 Gibbs sampling으로 푸는 것에 대한 ChatGPT의 답이다.  -->
+```{r}
+# 데이터 정의
+x <- c(10, 13, 15, 11, 9, 18, 20, 17, 23, 21)
+n <- length(x)  # 데이터의 개수
+x_bar <- mean(x)  # 데이터의 평균
+
+# 사전 분포의 매개변수
+mu_prior_mean <- 10
+mu_prior_var <- 5^2
+alpha_prior <- 0.5  # 역감마 분포의 shape 파라미터
+beta_prior <- 1     # 역감마 분포의 scale 파라미터
+
+# 깁스 샘플링 설정
+n_iter <- 10000  # 총 반복 횟수
+mu_samples <- numeric(n_iter)  # mu 값을 저장할 벡터
+sigma2_samples <- numeric(n_iter)  # sigma^2 값을 저장할 벡터
+
+# 초기값 설정
+mu_samples[1] <- mean(x)  # mu의 초기값을 데이터의 평균으로 설정
+sigma2_samples[1] <- var(x)  # sigma^2의 초기값을 데이터의 분산으로 설정
+
+# 깁스 샘플링 과정
+for (t in 2:n_iter) {
+  # Step 1: sigma^2 | x, mu^(t-1) 샘플링 (Inverse-Gamma 분포)
+  alpha_post <- alpha_prior + n / 2
+  beta_post <- beta_prior + sum((x - mu_samples[t-1])^2) / 2
+  sigma2_samples[t] <- 1 / rgamma(1, shape = alpha_post, rate = beta_post)
+
+  # Step 2: mu | x, sigma2^(t) 샘플링 (정규 분포)
+  mu_post_mean <- (mu_prior_mean / mu_prior_var + sum(x) / sigma2_samples[t]) / 
+                  (1 / mu_prior_var + n / sigma2_samples[t])
+  mu_post_var <- 1 / (1 / mu_prior_var + n / sigma2_samples[t])
+  mu_samples[t] <- rnorm(1, mean = mu_post_mean, sd = sqrt(mu_post_var))
+}
+
+# 결과 확인
+# 사후 분포의 평균과 분산
+cat("Posterior mean of mu:", mean(mu_samples), "\n")
+cat("Posterior mean of sigma^2:", mean(sigma2_samples), "\n")
+
+# 사후 분포 시각화
+par(mfrow = c(2, 1))
+hist(mu_samples, breaks = 30, main = expression(paste("Posterior of ", mu)), xlab = expression(mu))
+hist(sigma2_samples, breaks = 30, main = expression(paste("Posterior of ", sigma^2)), xlab = expression(sigma^2))
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
