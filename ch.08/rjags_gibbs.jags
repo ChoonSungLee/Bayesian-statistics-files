@@ -1,0 +1,14 @@
+
+model {
+  for (i in 1:N) {
+    x[i] ~ dnorm(mu, invsigsq)
+  }
+  mu ~ dnorm(mu0, invsigsq0)
+  invsigsq ~ dgamma(a, b)
+  sigsq <- 1/invsigsq
+  mu0 <- 10
+  invsigsq0 <- 1/25
+  a <- 0.5
+  b <- 1
+}
+

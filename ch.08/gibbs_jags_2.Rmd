@@ -1,0 +1,89 @@
+# Gibbs sampling with RJAGS
+
+## 패키지 설치
+
+R에 이미 JAGS가 설치되어있다. 
+
+```{r}
+if(!require("rjags")) install.packages("rjags")
+library(rjags)
+```
+
+```{r}
+if(!require("coda")) install.packages("coda")
+library(coda)
+```
+
+
+정확한 코드 작성을 위하여 먼저 prompt를 준다. 
+
+* 가능도: $X_i|\mu, \sigma^2 \sim N(\mu, \sigma^2)$, i = 1,...,10, 
+          x = (10, 13, 15, 11, 9, 18, 20, 17, 23, 21), 
+* 사전분포: 
+  * $\mu \sim N(\mu_0, \sigma_0^2)$, 
+  * $\sigma^2 \sim IG(a, b)$
+
+이 모형을 위한 JAGS 코드는 다음과 같다. 
+
+<!-- 코드 내에서는 latex을 쓰지 않는다. latex는 MD언어인 본문에서만 쓴다. -->
+<!-- 아래는 jags 파일이 아니라 r 코드이다 -->
+```{r}
+writeLines("
+model {
+  for (i in 1:N) {
+    x[i] ~ dnorm(mu, invsigsq)
+  }
+  mu ~ dnorm(mu0, invsigsq0)
+  invsigsq ~ dgamma(a, b)
+  sigsq <- 1/invsigsq
+  mu0 <- 10
+  invsigsq0 <- 1/25
+  a <- 0.5
+  b <- 1
+}
+", con = "rjags_gibbs.jags")
+```
+
+```{r}
+dataList=list(N=10, x=c(10, 13, 15, 11, 9, 18, 20, 17, 23, 21))
+initList=list(mu=10, invsigsq=1/25)
+```
+
+
+```{r}
+jagsgibbsModel=jags.model(file="rjags_gibbs.jags", data=dataList, inits=initList, n.chains=3, n.adapt=500)
+
+update(jagsgibbsModel, 500)
+```
+
+
+```{r}
+codaSamples=coda.samples(jagsgibbsModel, variable.names=c("mu", "sigsq"), n.iter=5000)
+```
+
+## 수렴진단
+
+```{r}  
+par(mfrow=c(1,2))
+coda::traceplot(codaSamples[, "mu"], main="", ylab="mu")
+acf(codaSamples[, "mu"][[1]], plot=T, main="", ylab="ACF")
+
+coda::traceplot(codaSamples[, "sigsq"], main="", ylab="sigsq")
+acf(codaSamples[, "sigsq"][[1]], plot=T, main="", ylab="ACF")
+```
+
+
+## 사후추론
+
+```{r}
+MuSamples=as.matrix(codaSamples[, "mu"])
+SigSamples=as.matrix(codaSamples[, "sigsq"])
+```
+
+
+```{r}
+par(mfrow=c(2,1))
+plot(density(MuSamples), xlab=expression(mu), ylab="posterior density", main="")
+plot(density(SigSamples), xlab=expression(sigma^2), ylab="posterior density", main="")
+```
+
