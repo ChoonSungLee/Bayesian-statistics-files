@@ -1,0 +1,8 @@
+model {
+  for (i in 1:N) {
+    x[i] ~ dnorm(mu, tau)
+  }
+  mu ~ dnorm(0, 1/100^2)
+  tau <- 1/sigma^2
+  sigma ~ dunif(0, 100)
+}
