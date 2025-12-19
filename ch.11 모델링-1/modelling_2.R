@@ -46,6 +46,7 @@ print(fit_nb)
 extract(fit_nb)
 
 posterior_predictive <- extract(fit_nb, pars = "y_rep")[[1]]
+
 g_nb <- data.frame(nb_sample = y_nb) %>%
   ggplot(aes(x = nb_sample)) +
   geom_histogram(aes(y = after_stat(density)), binwidth = 1, fill = "skyblue", color = "black") +
