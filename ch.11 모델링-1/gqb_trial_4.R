@@ -1,5 +1,6 @@
 library(rstan)
 
+# Generate Poisson data
 set.seed(123) # 재현성을 위해 시드 설정
 n <- 200
 lambda <- 10
@@ -26,6 +27,7 @@ generated quantities {
 }
 "
 
+# Stan fitting (includes GQB execution)
 fit_with_generated <- stan(model_code = stan_code_with_generated, data = list(N = n, y = y))
 
 # Extract posterior predictive data (y_rep)

@@ -1,6 +1,7 @@
 library(rstan)
 
-# Generate Poisson data (already given in the question)
+# Generate Poisson data 
+set.seed(123) # Set seed for fair comparison
 n <- 200
 lambda <- 10
 y <- rpois(n, lambda)
