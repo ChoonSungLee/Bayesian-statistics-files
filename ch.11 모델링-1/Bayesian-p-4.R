@@ -38,7 +38,7 @@ data_list <- list(
 )
 
 # Stan 모델 실행
-fit <- stan(model_code = stan_code, data = data_list, iter = 2000, chains = 4)
+fit <- stan(model_code = stan_code, data = data_list, iter = 2000, chains = 4, seed = 1234)
 
 # 사후 분포에서 추출
 posterior <- extract(fit)
@@ -46,6 +46,7 @@ predicted_successes <- posterior$predicted_successes
 
 # 관측된 성공 사례보다 극단적인 값 계산
 observed_successes <- 65
+
 # 올바른 방식의 양측 베이즈 p-값 계산
 prob_greater_equal <- mean(predicted_successes >= observed_successes)
 prob_less_equal <- mean(predicted_successes <= observed_successes)
@@ -54,5 +55,4 @@ prob_less_equal <- mean(predicted_successes <= observed_successes)
 bayesian_p_value_corrected <- 2 * min(prob_greater_equal, prob_less_equal)
 
 # 결과 출력
-print(paste("Bayesian p-value:", bayesian_p_value))
-
+print(paste("Bayesian p-value:", bayesian_p_value_corrected))
