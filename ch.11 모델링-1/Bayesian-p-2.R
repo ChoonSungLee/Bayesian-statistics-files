@@ -33,7 +33,7 @@ generated quantities {
 "
 
 # Compile Stan model
-fit <- stan(model_code = stan_code, data = list(N = n, y = y))
+fit <- stan(model_code = stan_code, data = list(N = n, y = y), seed = 1234)
 
 # Step 3: Extract posterior predictive statistics (s_y_rep)
 s_y_rep <- extract(fit, pars = "s_y_rep")$s_y_rep

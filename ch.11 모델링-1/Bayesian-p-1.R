@@ -28,7 +28,7 @@ generated quantities {
 "
 
 # Fit Stan model
-fit <- stan(model_code = stan_code, data = list(N = n, y = y))
+fit <- stan(model_code = stan_code, data = list(N = n, y = y), seed = 1234)
 
 # Extract statistics
 s_y <- extract(fit, pars = "s_y")$s_y[1]  # Observed mean
