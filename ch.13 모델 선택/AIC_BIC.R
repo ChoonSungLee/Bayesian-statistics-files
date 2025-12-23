@@ -5,6 +5,7 @@ library(loo)
 data <- c(1.1, 1.9, 2.3, 2.0, 1.8)  
 n <- length(data)
 data_frame <- data.frame(data=data)
+n <- length(data)  # # Sample size (required for BIC calculation)
 
 # AIC, BIC calculation
 log_likelihood <- function(mu) {
