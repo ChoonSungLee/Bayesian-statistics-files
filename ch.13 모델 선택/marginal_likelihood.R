@@ -27,3 +27,4 @@ marginal_likelihood <- logml(bridge_result)
 
 # 결과 출력
 cat(sprintf("Marginal Likelihood (log scale): %.4f\n", marginal_likelihood))
+
