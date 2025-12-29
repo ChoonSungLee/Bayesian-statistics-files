@@ -3,7 +3,7 @@ library(rstanarm)
 data_frame <- data.frame(
   y = c(1.1, 1.9, 2.3, 2.0, 1.8),  # 종속 변수
   x1 = c(0, 1, 0, 1, 0),           # 독립 변수 1
-  x2 = c(1, 0, 1, 0, 1)            # 독립 변수 2
+  x2 = c(1, 0, 1, 0, 0.5)            # 독립 변수 2
 )
 
 library(bridgesampling)
