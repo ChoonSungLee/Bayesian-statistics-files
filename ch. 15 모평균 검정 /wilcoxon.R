@@ -43,7 +43,7 @@ wilcox.test(group_A, group_B)
 
 # 결과 저장
 t_result <- t.test(group_A, group_B, var.equal = FALSE)
-w_result <- wilcox.test(group_A, group_B)
+w_result <- wilcox.test(group_A, group_B, exact = FALSE)
 
 # 결과 비교 출력
 cat("📌 Welch's t-test 결과:\n")
@@ -51,3 +51,4 @@ cat("t =", t_result$statistic, ", p-value =", t_result$p.value, "\n\n")
 
 cat("📌 Wilcoxon rank-sum test 결과:\n")
 cat("W =", w_result$statistic, ", p-value =", w_result$p.value, "\n")
+
