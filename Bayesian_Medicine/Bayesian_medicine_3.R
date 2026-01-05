@@ -144,3 +144,5 @@ print(paste("수술이 더 나을 확률:", round(prob_surg_better * 100, 1), "%
 hist(results$diff_utility, main="Difference in Utility (Surgery - Conservative)", 
      xlab="Difference (Positive = Surgery Preferred)", col="lightblue", breaks=30)
 abline(v=0, col="red", lwd=2)
+
+
