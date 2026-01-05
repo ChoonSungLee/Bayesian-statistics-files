@@ -53,7 +53,7 @@ post_model <- stan_glm(
 )
 
 print("--- 모델 적합 완료 ---")
-# print(summary(post_model))
+print(summary(post_model))
 
 # ==============================================================================
 # 3. MCMC 결과 해석 및 신규 환자 예측 (Posterior Prediction)
@@ -62,6 +62,7 @@ print("--- 모델 적합 완료 ---")
 # posterior_linpred(transform = TRUE)는 로짓을 확률(0~1)로 변환해줍니다.
 
 # 4000개의 MCMC 샘플 추출 (Posterior Samples for the specific patient)
+
 p_samples <- posterior_linpred(post_model, newdata = new_patient, transform = TRUE)
 
 # 결과는 4000 x 1 행렬입니다. 벡터로 변환.
@@ -130,3 +131,6 @@ print(paste(decision, "-", reason))
 # (심화) 수술이 더 나을 확률 (Probabilistic Superiority)
 prob_surg_better <- mean(EU_surg_samples > EU_cons_samples)
 print(paste("베이지안 확신도: 수술이 보존치료보다 더 나은 선택일 확률은", round(prob_surg_better * 100, 1), "% 입니다."))
+
+
+
