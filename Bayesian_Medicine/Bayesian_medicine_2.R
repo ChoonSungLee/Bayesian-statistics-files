@@ -114,8 +114,8 @@ mean_EU_surg <- mean(EU_surg_samples)
 mean_EU_cons <- mean(EU_cons_samples)
 
 print("--- 최종 결정 분석 결과 ---")
-print(paste("수술 선택 시 기대 효용 (E[U|Surgery]):", round(mean_EU_surg, 4)))
-print(paste("보존 선택 시 기대 효용 (E[U|Conservative]):", round(mean_EU_cons, 4)))
+print(paste("수술 선택 시 평균기대 효용 (E[U|Surgery]):", round(mean_EU_surg, 4)))
+print(paste("보존 선택 시 평균기대 효용 (E[U|Conservative]):", round(mean_EU_cons, 4)))
 
 # Optimal Action Selection
 if (mean_EU_surg > mean_EU_cons) {
