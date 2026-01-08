@@ -80,6 +80,13 @@ mcmc_hist <- ggplot(data.frame(p = p_failure_dist), aes(x = p)) +
 print(mcmc_hist)
 print(paste("이 환자의 보존치료 실패 예상 확률(평균):", round(mean(p_failure_dist), 3)))
 
+# (추가) 95% 신용 구간 (Credible Interval) 계산
+# 4,000개의 샘플을 크기순으로 줄 세워서 하위 2.5%와 상위 97.5%를 자릅니다.
+ci_95 <- quantile(p_failure_dist, probs = c(0.025, 0.975))
+
+print("--- 베이지안 95% 신용 구간 (Credible Interval) ---")
+print(round(ci_95, 3))
+
 # ==============================================================================
 # 4. 효용 함수(Utility Function) 정의 및 기대 효용 계산
 # ==============================================================================
@@ -131,6 +138,16 @@ print(paste(decision, "-", reason))
 # (심화) 수술이 더 나을 확률 (Probabilistic Superiority)
 prob_surg_better <- mean(EU_surg_samples > EU_cons_samples)
 print(paste("베이지안 확신도: 수술이 보존치료보다 더 나은 선택일 확률은", round(prob_surg_better * 100, 1), "% 입니다."))
+
+# (심화) 수술이 보존치료보다 얼마나 더 이득인가? (효용 차이의 분포)
+# diff_utility가 양수면 수술 이득, 음수면 보존 이득
+diff_utility_dist <- EU_surg_samples - EU_cons_samples
+
+# 효용 차이의 95% 구간
+ci_diff <- quantile(diff_utility_dist, probs = c(0.025, 0.975))
+
+print("--- 수술과 보존치료의 기대 효용 차이 (95% 구간) ---")
+print(round(ci_diff, 4))
 
 
 
