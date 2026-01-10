@@ -29,7 +29,7 @@ model {
   // 정보가 없다고 가정하여 Uniform(Beta(1,1)) 분포 사용
   theta ~ beta(1, 1); 
   
-  // 우도 함수 (Likelihood) - 벡터화된 코딩
+  // 가능도 함수 (Likelihood) - 벡터화된 코딩
   // 루프를 돌리지 않고 한 번에 기술 (Stan의 장점)
   y ~ binomial(N, theta);
 }
@@ -94,13 +94,12 @@ posterior <- rstan::extract(fit)
 
 # (3) 수술(theta[1])이 다른 치료법보다 우수할 확률 계산
 prob_surgery_best <- mean(posterior$is_best_1)
-cat(sprintf(\"수술이 세 가지 방법 중 성공률이 가장 높을 확률: %.1f%%\\n\", prob_surgery_best * 100))
+cat(sprintf("수술이 세 가지 방법 중 성공률이 가장 높을 확률: %.1f%%\n", prob_surgery_best * 100))
 
 # (4) 수술 vs IMRT 차이 시각화 (Density Plot)
+# 아래 mcmc_areas 코드는 bayesplot 패키지 함수입니다.
 mcmc_areas(
   as.array(fit), 
   pars = c("diff_12", "diff_13", "diff_23"),
   prob = 0.95 # 95% 신뢰구간 표시
 ) + ggtitle("Posterior Distributions of Treatment Differences")
-
-
