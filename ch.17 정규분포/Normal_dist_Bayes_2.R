@@ -1,5 +1,5 @@
 
-# 평균과 분산이 모두 미지수인 정규분포 (이건 다루지 않았다)
+# 평균과 분산이 모두 미지수인 정규분포 
 # 필요한 라이브러리
 library(rstan)
 library(bayesplot)
@@ -15,12 +15,16 @@ data {
 }
 parameters {
   real mu;
+  real<lower=0> sigma2; // 분산(variance)을 파라미터로 선언
+}
+transformed parameters {
   real<lower=0> sigma;
+  sigma = sqrt(sigma2); // 표준편차로 변환
 }
 model {
-  mu ~ normal(88, 2); // 사전분포
-  sigma ~ inv_gamma(2, 1); // 분산에 대한 사전분포
-  y ~ normal(mu, sigma); // 우도함수
+  mu ~ normal(88, 2);
+  sigma2 ~ inv_gamma(2, 1); // 분산에 역감마 사전분포 적용
+  y ~ normal(mu, sigma);    // 가능도에는 표준편차 사용
 }
 generated quantities {
   real sigma2;
@@ -59,4 +63,4 @@ mcmc_trace(as.array(fit), pars = c("mu", "sigma2"))
 mcmc_dens(as.array(fit), pars = c("mu", "sigma2"))
 
 
-~~~~
+

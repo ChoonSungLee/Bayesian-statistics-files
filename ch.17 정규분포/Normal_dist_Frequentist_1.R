@@ -42,7 +42,7 @@ ggplot(data.frame(x = x, density = likelihood), aes(x = x, y = density)) +
   geom_vline(xintercept = upper_bound, color = "blue", linetype = "dashed") +
   labs(title = "Frequentist Inference for Normal Mean (Known Variance)",
        x = "Mean (μ)",
-       y = "Likelihood Density") +
+       y = "Likelihood") +
   theme_minimal()
 
 
