@@ -66,6 +66,11 @@ T_obs_sd   <- sd(data)             # 실제 데이터의 표준편차(등)
 T_rep_means <- apply(y_rep_matrix, 1, mean)
 T_rep_sds   <- apply(y_rep_matrix, 1, sd)
 
+# Calculate Bayesian p-value
+# Probability that replicated mean > observed mean
+p_value <- mean(T_rep_means > T_obs_mean) 
+print(p_value) # If around 0.5, model fits the data well
+
 # 분포 비교
 hist(T_rep_means, breaks=30, col="lightblue",
      main="Distribution of replicated means",
@@ -73,9 +78,6 @@ hist(T_rep_means, breaks=30, col="lightblue",
 abline(v = T_obs_mean, col="red", lwd=2)
 
 # 시각적으로, T_obs_mean이 T_rep_means 분포의 중앙 부근인지 확인.
-
-# 혹은 p-value-like 지표를 간단히 볼 수도 있음.
-mean(T_rep_means > T_obs_mean)  # T_obs가 어느 분위수인지
 
 
 
