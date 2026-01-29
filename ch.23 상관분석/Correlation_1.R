@@ -41,3 +41,34 @@ bayes_result <- correlationBF(x = my_data$Hours,
 
 bayes_result
 
+# ---------------------------------------------------------
+# [추가] 상관계수의 사후분포 추정 및 시각화
+# ---------------------------------------------------------
+
+# 1. 사후분포로부터 샘플 추출 (MCMC 샘플링)
+# iterations: 추출할 샘플 수
+samples <- posterior(bayes_result, iterations = 10000)
+
+# 2. 샘플 구조 확인
+# rho(상관계수) 열이 생성됨을 확인
+head(samples)
+summary(samples)
+
+# 3. 사후분포 시각화 (상관계수 rho의 분포)
+# rho 열만 선택하여 히스토그램 작성
+rho_samples <- samples[, "rho"]
+
+# 히스토그램 그릴 때 폰트 지정
+# Windows는 "malgun", macOS는 "AppleGothic"
+par(family = "AppleGothic") 
+
+hist(rho_samples, breaks = 50, col = "skyblue", border = "white",
+     main = "상관계수(rho)의 사후분포",
+     xlab = "상관계수 (rho)", 
+     ylab = "밀도", 
+     freq = FALSE)
+
+# 4. 사후 요약치 추가 (평균 및 95% 신뢰구간)
+abline(v = mean(rho_samples), col = "red", lwd = 2, lty = 2) # 사후 평균
+abline(v = quantile(rho_samples, c(0.025, 0.975)), col = "blue", lty = 3) # 95% HDI
+
