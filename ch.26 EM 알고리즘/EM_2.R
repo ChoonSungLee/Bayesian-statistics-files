@@ -88,7 +88,7 @@ gmm_em <- function(data, K = 2, max_iter = 100, tol = 1e-6) {
     # N(x_i | mu_k, sigma_k^2)는 cluster_densities
     # pi_k는 pi_k
     
-    # 로그 우도 계산 (ELBO의 가장 간단한 형태)
+    # 5. 로그 우도 계산 (ELBO의 가장 간단한 형태)
     current_log_likelihood <- sum(log(marginal_likelihood_per_point))
     log_likelihood_history[iter] <- current_log_likelihood
     
