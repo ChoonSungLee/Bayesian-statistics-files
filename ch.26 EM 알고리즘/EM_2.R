@@ -127,7 +127,7 @@ gmm_em <- function(data, K = 2, max_iter = 100, tol = 1e-6) {
       sigma_sq_k[k] <- sum(gamma_ik[, k] * (data - mu_k[k])^2) / N_k[k]
     }
     
-    # 수렴 확인 (로그 우도 변화량이 임계값보다 작으면 중단)
+    # 수렴 확인 (로그 가능도 변화량이 임계값보다 작으면 중단)
     if (iter > 1 && abs(log_likelihood_history[iter] - log_likelihood_history[iter-1]) < tol) {
       cat(sprintf("Converged at iteration %d\n", iter))
       log_likelihood_history <- log_likelihood_history[1:iter]
