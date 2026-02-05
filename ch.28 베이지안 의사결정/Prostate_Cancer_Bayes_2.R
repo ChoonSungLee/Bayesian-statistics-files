@@ -30,7 +30,7 @@ model {
   // 사전 분포 (Prior)
   theta ~ beta(1, 1); 
   
-  // 우도 함수 (Likelihood)
+  // 가능도 함수 (Likelihood)
   y ~ binomial(N, theta);
 }
 
@@ -140,3 +140,4 @@ names(p_values) <- c("Surgery", "IMRT", "Proton")
 
 cat("\n[Bayesian P-values (Ideal ~ 0.5, Extreme < 0.05 or > 0.95)]\n")
 print(p_values)
+
