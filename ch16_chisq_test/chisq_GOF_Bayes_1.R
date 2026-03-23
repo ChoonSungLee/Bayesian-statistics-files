@@ -1,12 +1,13 @@
-# 코드 2; Goodness of Fit Test; 
 
-# 관측값과 기대값
+# 1. 기본 정보 설정 (빈도주의 결과 활용)
 observed <- c(95, 55, 50)
-expected_proportions <- c(0.5, 0.3, 0.2)
-total <- sum(observed)
-expected <- total * expected_proportions
+n <- sum(observed)    # 전체 표본 크기: 200
+K <- length(observed) # 범주의 개수: 3
+chi_sq_stat <- 3.1667 # 앞서 계산한 카이제곱 통계량
 
-# 베이즈 팩터 계산 (근사적 방법)
-bayes_factor <- exp(-0.5 * chi_sq_stat)  # 간단한 변환
+# 2. BIC 차이를 이용한 베이즈 팩터 근사 계산
+delta_bic <- (K - 1) * log(n) - chi_sq_stat
+bf_01_approx <- exp(delta_bic / 2)
 
-print(bayes_factor)
+print(paste("BIC 기반 BF01 근사치:", round(bf_01_approx, 2)))
+# 결과: "BIC 기반 BF01 근사치: 41.04"
