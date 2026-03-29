@@ -59,7 +59,7 @@ plot(fitted(model), residuals(model),
      xlab = "Fitted values (예측값)", 
      ylab = "Residuals (잔차)",
      main = "Residual Plot",
-     pch = 16) # 점 모양을 채워진 원으로 지정
+     pch = 16)
 # y=0 기준선 추가
 abline(h = 0, col = "red", lwd = 2)
 
