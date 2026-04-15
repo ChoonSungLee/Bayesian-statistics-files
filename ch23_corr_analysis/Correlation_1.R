@@ -70,5 +70,5 @@ hist(rho_samples, breaks = 50, col = "skyblue", border = "white",
 
 # 4. 사후 요약치 추가 (평균 및 95% 신뢰구간)
 abline(v = mean(rho_samples), col = "red", lwd = 2, lty = 2) # 사후 평균
-abline(v = quantile(rho_samples, c(0.025, 0.975)), col = "blue", lty = 3) # 95% HDI
+abline(v = quantile(rho_samples, c(0.025, 0.975)), col = "blue", lty = 3) # 95% ETI
 

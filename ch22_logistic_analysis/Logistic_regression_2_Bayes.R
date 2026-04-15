@@ -50,7 +50,8 @@ bayes_model <- brm(disease ~ age + blood_pressure, data = data, family = bernoul
 summary(bayes_model)
 
 # Check the posterior distribution samples
-posterior_samples <- posterior_samples(bayes_model)
+posterior_samples <- as_draws_df(bayes_model)
+# posterior_samples <- posterior_samples(bayes_model)
 head(posterior_samples)
 
 # Visualization of the posterior distribution

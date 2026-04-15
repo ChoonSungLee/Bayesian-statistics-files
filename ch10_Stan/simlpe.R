@@ -29,3 +29,4 @@ library(shinystan)
 aFit <- as.shinystan(fit)
 launch_shinystan(aFit)
 
+

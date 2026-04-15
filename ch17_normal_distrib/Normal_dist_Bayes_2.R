@@ -26,10 +26,10 @@ model {
   sigma2 ~ inv_gamma(2, 1); // 분산에 역감마 사전분포 적용
   y ~ normal(mu, sigma);    // 가능도에는 표준편차 사용
 }
-generated quantities {
-  real sigma2;
-  sigma2 = sigma * sigma; // 분산으로 변환
-}
+// generated quantities {
+//  real sigma2;
+//  sigma2 = sigma * sigma; // 분산으로 변환
+// }
 "
 
 # 데이터 전달
