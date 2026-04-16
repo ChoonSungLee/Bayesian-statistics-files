@@ -18,8 +18,8 @@ rstan_options(auto_write = TRUE)
 stan_code <- "
 data {
   int<lower=1> K;          // 치료 그룹의 수 (3)
-  int<lower=0> N[K];       // 각 그룹의 전체 환자 수
-  int<lower=0> y[K];       // 각 그룹의 치료 성공 환자 수
+  array[K] int<lower=0> N;       // 각 그룹의 전체 환자 수
+  array[K] int<lower=0> y;       // 각 그룹의 치료 성공 환자 수
 }
 
 parameters {
@@ -48,7 +48,7 @@ generated quantities {
 
   // [PART 2] 사후 예측 (Posterior Predictive Check)
   // 현재 추정된 theta를 바탕으로 가상의 환자 데이터를 다시 생성
-  int y_pred[K]; 
+  array[K] int y_pred; 
   for (k in 1:K) {
     y_pred[k] = binomial_rng(N[k], theta[k]);
   }

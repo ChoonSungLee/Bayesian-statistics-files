@@ -52,7 +52,7 @@ data {
   vector[N] age;           // 나이
   vector[N] mri;           // MRI 등급
   vector[N] slr;           // SLR 검사 결과
-  int<lower=0, upper=1> y[N]; // 치료 실패 여부 (0 or 1)
+  array[N] int<lower=0, upper=1> y; // 치료 실패 여부 (0 or 1)
   
   // 2. 예측할 환자 데이터
   real new_age;
