@@ -49,7 +49,7 @@ observed_successes <- 65
 
 # 올바른 방식의 양측 베이즈 p-값 계산
 prob_greater_equal <- mean(predicted_successes >= observed_successes)
-prob_less_equal <- mean(predicted_successes <= observed_successes)
+prob_less_equal <- mean(predicted_successes < observed_successes)
 
 # 더 작은 쪽 꼬리 확률에 2를 곱함
 bayesian_p_value_corrected <- 2 * min(prob_greater_equal, prob_less_equal)
